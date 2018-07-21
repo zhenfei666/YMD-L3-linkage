@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(midnightblue, black);
+        }
+
+        form {       
+            width: 30em;
+            height: 30em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        select {
+            border: 2px solid yellowgreen;
+            color: violet;
+            width: 90px;
+            height: 30px;
+            font-size: 25px;
+        }
+
+        span {
+            color: gainsboro;
+            margin-left: 20px;
+            font-size: 30px;
+        }
+    </style>
+</head>
+
+<body >
+    <form name=form1>
+        <select name=YYYY onchange="YYYYMM(this.value)">
+            <option value="">年</option>
+        </select>
+        <select name=MM onchange="MMDD(this.value)">
+            <option value="">月</option>
+        </select>
+        <select name=DD>
+            <option value="">日</option>
+        </select>
+        <span class="H"></span>
+    </form>
+
+    <script language="JavaScript">
+        window.onload = function () {
+            strYYYY = document.form1.YYYY.outerHTML;
+            strMM = document.form1.MM.outerHTML;
+            strDD = document.form1.DD.outerHTML;
+            LastDay = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+            //先给年下拉框赋内容
+            var y = new Date().getFullYear();
+            var str = strYYYY.substring(0, strYYYY.length - 9);
+            for (var i = (y - 30); i < (y + 30); i++) //以今年为准，前30年，后30年
+            {
+                str += "<option value='" + i + "'> " + i + "</option>\r\n";
+            }
+            document.form1.YYYY.outerHTML = str + "</select>";
+            document.form1.YYYY.value = y;
+
+            //赋月份的下拉框
+            var str = strMM.substring(0, strMM.length - 9);
+            for (var i = 1; i < 13; i++) {
+                str += "<option value='" + i + "'> " + i + "</option>\r\n";
+            }
+            document.form1.MM.outerHTML = str + "</select>";
+            document.form1.MM.value = new Date().getMonth() + 1;
+
+
+            var n = LastDay[new Date().getMonth()];
+            if (new Date().getMonth() == 1 && IsRun(YYYYvalue)) n++;
+            writeDay(n); //赋日期下拉框
+            document.form1.DD.value = new Date().getDate();
+        }
+
+        function YYYYMM(str) //年发生变化时日期发生变化(主要是判断闰平年)
+        {
+            var MMvalue = document.form1.MM.options[document.form1.MM.selectedIndex].value;
+            // if (MMvalue == "") {
+            //     DD.outerHTML = strDD;
+            //     return;
+            // }
+            var n = LastDay[MMvalue - 1];
+            if (MMvalue == 2 && IsRun(str)) n++;
+            writeDay(n)
+        }
+
+        function MMDD(str) //月发生变化时日期联动
+        {
+            var YYYYvalue = document.form1.YYYY.options[document.form1.YYYY.selectedIndex].value;
+            // if (str == "") {
+            //     DD.outerHTML = strDD;
+            //     return;
+            // }
+            var n = LastDay[str - 1];
+            if (str == 2 && IsRun(YYYYvalue)) n++;
+            writeDay(n)
+        }
+
+        function writeDay(n) //据条件写日期的下拉框
+        {
+            var s = strDD.substring(0, strDD.length - 9);
+            for (var i = 1; i < (n + 1); i++)
+                s += "<option value='" + i + "'> " + i + "</option>\r\n";
+            document.form1.DD.outerHTML = s + "</select>";
+        }
+
+        function IsRun(year) //判断是否闰平年
+        {
+            return (0 == year % 4 && (year % 100 != 0 || year % 400 == 0))
+        }
+
+
+        // alert(sec);
+        // document.getElementsByClassName('H')[0].innerHTML = hou + ":" + min + ":" + sec;
+        function time() {
+            var hou = new Date().getHours()<10?"0"+ new Date().getHours() : new Date().getHours();
+            var min = new Date().getMinutes()<10?"0"+ new Date().getMinutes() : new Date().getMinutes();
+            var sec = new Date().getSeconds()<10?"0"+ new Date().getSeconds() : new Date().getSeconds();
+            document.getElementsByClassName('H')[0].innerHTML = hou + " : " + min + " : " + sec;
+           
+        }
+        window.setInterval("time()", 1000);
+        //-->
+    </script>
+</body>
+
+</html>
